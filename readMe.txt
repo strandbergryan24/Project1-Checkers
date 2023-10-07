@@ -1,0 +1,1 @@
+This I a Readme File for the setup of my project 1. I will be making a checkers game 

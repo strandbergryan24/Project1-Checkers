@@ -1,0 +1,33 @@
+body {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(10, 1fr);
+    height: 100vh;
+}
+.checkerBoard {
+    background-image: url('../resource/CheckerBoard.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    grid-row: 2 / span 8;
+    grid-column: 2 / span 8;
+}
+.redPiece {
+
+}
+.bluePiece {
+    
+}
+#P1 {
+    grid-row: 1;
+    grid-column: 5 / span 6;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}
+#P2 {
+    grid-row: 10;
+    grid-column: 5 / span 6;
+    text-align: center;
+    display: flex;
+    align-items: center;
+}

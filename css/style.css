@@ -1,33 +1,36 @@
 body {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    grid-template-rows: repeat(10, 1fr);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: 100vh;
+    margin: 0;
 }
 .checkerBoard {
-    background-image: url('../resource/CheckerBoard.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    grid-row: 2 / span 8;
-    grid-column: 2 / span 8;
+    width: 800px;
+    height: 800px;
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    border: 2px solid black;
 }
-.redPiece {
-
-}
-.bluePiece {
-    
-}
-#P1 {
-    grid-row: 1;
-    grid-column: 5 / span 6;
-    text-align: center;
+.square {
+    width: 100%;
+    height: 100%;
     display: flex;
+    justify-content: center;
     align-items: center;
+    color: white;
+    /* border: 2px solid black; */
 }
-#P2 {
-    grid-row: 10;
-    grid-column: 5 / span 6;
-    text-align: center;
+.square1 {
+    width: 100%;
+    height: 100%;
     display: flex;
+    justify-content: center;
     align-items: center;
+    background-color: black;
+    /* border: 2px solid black; */
+}
+P1 {
+    align-items: start;
 }

@@ -31,6 +31,15 @@ body {
     background-color: black;
     /* border: 2px solid black; */
 }
-P1 {
-    align-items: start;
+.piece {
+    width: 80%;
+    height: 80%;
+    background-size: cover;
+    border-radius: 50%;
+}
+.red {
+    background-image: url(../resource/Red.png);
+}
+.blue {
+    background-image: url(../resource/Blue.png);
 }

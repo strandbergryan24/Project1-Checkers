@@ -1,5 +1,12 @@
-document.addEventListener('DOMContentLoaded', function () { 
-    let currentPlayer = "red";
+let currentPlayer = "red";
+
+function switchPlayers() {
+    currentPlayer = currentPlayer === "red" ? "blue" : "red";
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    let selectedPiece = null;
+    let selectedSquare = null;
 
     function currentPlayerPiece(piece) {
         return piece.classList.contains(currentPlayer);
@@ -7,107 +14,88 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const pieces = document.querySelectorAll(".piece");
     const squares = document.querySelectorAll(".square1");
-    let selectedPiece = null;
+    const pieceList = Array.from(pieces);
 
     pieces.forEach(piece => {
         piece.addEventListener("click", function (event) {
             if (currentPlayerPiece(piece)) {
-            event.stopPropagation();
+                event.stopPropagation();
 
-            if(selectedPiece) {
-                selectedPiece.classList.remove("selected");
-            }
-
-            piece.classList.add("selected");
-            selectedPiece = piece
-            } else if (selectedPiece) {
-                const selectedSquare = document.querySelector(".square1.selected");
-                if (isValidMove(selectedPiece, selectedSquare)) {
-                    selectedSquare.appendChild(selectedPiece);
+                if (selectedPiece) {
                     selectedPiece.classList.remove("selected");
-
-                    currentPlayer = currentPlayer === "red" ? "blue" : "red";
-                    selectedPiece = null;
                 }
+
+                piece.classList.add("selected");
+                selectedPiece = piece;
+                selectedSquare = piece.parentElement;
+
+            
             }
         });
     });
 
     squares.forEach(square => {
         square.addEventListener("click", function () {
-            if (selectedPiece && isValidMove(selectedPiece, square)) {
+            if (selectedPiece && isValidMove(selectedPiece, square, currentPlayer, pieceList)) {
                 square.appendChild(selectedPiece);
                 selectedPiece.classList.remove("selected");
-                
-                currentPlayer = currentPlayer === "red" ? "blue" : "red";
+
+                const pieceRow = +selectedSquare.dataset.row;
+                const pieceCol = +selectedSquare.dataset.col;
+                const targetRow = +square.dataset.row;
+                const targetCol = +square.dataset.col;
+
+                const rowDiff = targetRow - pieceRow;
+                const colDiff = Math.abs(targetCol - pieceCol);
+                const direction = currentPlayer === "red" ? 1 : -1;
+
+                if (rowDiff === direction * 2 && colDiff === 2) {
+                    const capturedRow = pieceRow + direction;
+                    const capturedCol = (targetCol > pieceCol) ? pieceCol + 1 : pieceCol - 1;
+                    const capturedSquare = document.querySelector(`[data-row="${capturedRow}"][data-col="${capturedCol}"]`);
+
+                    if (capturedSquare && capturedSquare.hasChildNodes()) {
+                        const capturedPiece = capturedSquare.firstElementChild;
+                        pieceList.splice(pieceList.indexOf(capturedPiece), 1); // Remove the piece
+                        capturedSquare.removeChild(capturedPiece);
+                    }
+                }
+                switchPlayers();
                 selectedPiece = null;
-             }
+            }
         });
     });
 });
 
-function isValidMove(piece, square) {
+function isValidMove(piece, square, currentPlayer, checkCapture) {
     const pieceRow = +piece.parentElement.dataset.row;
     const pieceCol = +piece.parentElement.dataset.col;
     const targetRow = +square.dataset.row;
     const targetCol = +square.dataset.col;
 
-    const rowDiff = Math.abs(targetRow - pieceRow);
+    const rowDiff = targetRow - pieceRow;
     const colDiff = Math.abs(targetCol - pieceCol);
 
-    if (rowDiff === 1 && colDiff === 1 && !square.hasChildNodes()) {
+    let direction = 0;
+
+    if (currentPlayer === "red") {
+        direction = 1;
+    } else if (currentPlayer === "blue") {
+        direction = -1;
+    }
+    if (rowDiff === direction && colDiff === 1 && !square.hasChildNodes()) {
         return true;
     }
-    
-    return false; 
+
+    if (rowDiff === direction * 2 && colDiff === 2) {
+        const capturedRow = pieceRow + direction;
+        const capturedCol = (targetCol > pieceCol) ? pieceCol + 1 : pieceCol - 1;
+        const capturedSquare = document.querySelector(`[data-row="${capturedRow}"][data-col="${capturedCol}"]`);
+
+        if (capturedSquare && capturedSquare.hasChildNodes() && !capturedSquare.firstElementChild.classList.contains(currentPlayer)) {
+            return true;
+        }
+    }
+
+    return false;
 }
-
-// function isValidKingMove(piece, square) {
-//     const pieceRow = +piece.parentElement.dataset.row;
-//     const pieceCol = +piece.parentElement.dataset.col;
-//     const targetRow = +square.dataset.row;
-//     const targetCol = +square.dataset.col;
-
-//     const rowDiff = Math.abs(targetRow - pieceRow);
-//     const colDiff = Math.abs(targetCol - pieceCol);
-
-//     if (rowDiff === 1 && colDiff === 1 && !square.hasChildNodes()) {
-//         return true;
-//     }
-//     return false; 
-// }
-
-
-// function removeCapturePieces(piece, desinationSquare) {
-//     const pieceRow = +piece.parentElement.dataset.row;
-//     const pieceCol = +piece.parentElement.dataset.col;
-//     const targetRow = +desinationSquare.dataset.row;
-//     const targetCol = +desinationSquare.dataset.col;
-
-//     const rowDirection = targetRow - pieceRow > 0 ? 1 : -1;
-//     const colDirection = targetCol - pieceRow > 0 ? 1 : -1;
-
-//     let currentRow = pieceRow + rowDirection;
-//     let currentCol = pieceCol + colDirection;
-
-//     while (currentRow !== targetRow && currentCol !== targetCol) {
-//         const square = document.querySelector(`[data-row="${currentRow}"][data-col="${currentCol}"]`);
-//         if (square.hasChildNodes()) {
-//             square.removeChild(square.firstChild);
-//         }
-        
-//         currentRow += rowDirection;
-//         currentCol += colDirection;
-//     }
-// }
-
-// function isKing(piece, square) {
-//     if((currentPlayer === "red" && square.dataset.row === "8") || (currentPlayer === "blue" && square.dataset.row === "1")) {
-//         return true;
-//     }
-//     return false;
-// }
-
-// function kingPiece(piece) {
-//     piece.classList.add("king");
-// }

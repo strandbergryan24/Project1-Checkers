@@ -43,3 +43,9 @@ body {
 .blue {
     background-image: url(../resource/Blue.png);
 }
+.kinged.blue {
+    background-image: url(/resource/King-Blue.png);
+}
+.kinged.red {
+    background-image: url(/resource/King-Red.png);
+}
